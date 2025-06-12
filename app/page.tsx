@@ -1,18 +1,9 @@
 'use client'
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link';
 
 
 const Page = () => {
-  const router = useRouter()
-  const [searchTerm, setSearchTerm] = React.useState('')
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchTerm.trim()) return
-    
-    // Update URL with search term
-    router.push(`/search?q=${encodeURIComponent(searchTerm)}`)
-  }
 
   return (
     <>
@@ -55,26 +46,16 @@ const Page = () => {
       <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
         {/* Search Section */}
         <div className="max-w-4xl mx-auto text-center">
+          <svg className="w-16 h-16 mx-auto mb-6 text-gray-500 animate-float" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           
-          <form onSubmit={handleSearch} className="w-full max-w-lg mx-auto">
-            <div className="relative group">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search for books..."
-                className="w-full p-4 pr-16 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400 shadow-sm hover:shadow-md"
-              />
-              <button
-                type="submit"
-                className="absolute cursor-pointer right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-all duration-200"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-          </form>
+          <Link href="/search">
+          <button className="bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-black transition duration-300">
+            <span className="text-lg font-semibold">Search Books</span>
+          </button>
+          </Link>
+
         </div>
       </div>
     </>

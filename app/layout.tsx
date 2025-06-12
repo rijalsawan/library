@@ -2,7 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import LoadingBar from 'react-top-loading-bar';
@@ -17,12 +17,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// Create a separate component for the loading bar logic
+function LoadingBarController() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [progress, setProgress] = React.useState(0);
@@ -32,12 +28,30 @@ export default function RootLayout({
     const timer = setTimeout(() => setProgress(100), 500);
     return () => clearTimeout(timer);
   }, [pathname, searchParams]);
+
+  return (
+    <LoadingBar 
+      color="black" 
+      progress={progress} 
+      waitingTime={500} 
+      onLoaderFinished={() => setProgress(0)}
+    />
+  );
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LoadingBar color = "black" progress = {progress} waitingTime = {500} onLoaderFinished = {()=>setProgress(0)}/>
+        <Suspense fallback={<div></div>}>
+          <LoadingBarController />
+        </Suspense>
         <Navbar/>
         {children}
       </body>

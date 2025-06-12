@@ -101,12 +101,14 @@ const BookCard: React.FC<{ book: Book; index: number }> = ({ book, index }) => {
       <div className="p-4 sm:p-8">
         <div className="flex flex-col max-sm:space-y-4 sm:flex-row sm:items-start sm:space-x-6">
           <div className="flex-shrink-0 max-sm:self-center">
-            <div className="relative w-20 h-28 max-sm:w-24 max-sm:h-32 sm:w-24 sm:h-32 rounded-lg overflow-hidden shadow-md">
+            <div className="relative w-20 h-28 max-sm:w-24 max-sm:h-32 sm:w-24 sm:h-32">
               {volumeInfo.imageLinks?.thumbnail ? (
                 <img
                   src={volumeInfo.imageLinks.thumbnail}
                   alt={volumeInfo.title}
-                  className="w-full h-full object-cover"
+                  
+                  className="object-cover"
+                  sizes="(max-width: 640px) 96px, 96px"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -213,22 +215,26 @@ const BookCard: React.FC<{ book: Book; index: number }> = ({ book, index }) => {
 }
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 const Page = ({ searchParams }: PageProps) => {
   const router = useRouter()
   const [books, setBooks] = React.useState<Book[]>([])
-  const [loading, setLoading] = React.useState(false)
   const [searchTerm, setSearchTerm] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
   
   // Load search term and results from searchParams on component mount
   useEffect(() => {
-    const urlSearchTerm = searchParams.q
-    if (urlSearchTerm && typeof urlSearchTerm === 'string') {
-      setSearchTerm(urlSearchTerm)
-      performSearch(urlSearchTerm)
+    const loadSearchParams = async () => {
+      const params = await searchParams
+      const urlSearchTerm = params.q
+      if (urlSearchTerm && typeof urlSearchTerm === 'string') {
+        setSearchTerm(urlSearchTerm)
+        performSearch(urlSearchTerm)
+      }
     }
+    loadSearchParams()
   }, [searchParams])
 
   const performSearch = async (term: string) => {

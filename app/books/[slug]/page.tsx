@@ -40,15 +40,15 @@ interface Book {
 }
 
 interface PageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 const page = async ({ params }: PageProps) => {
     
     try {
-        const { slug } = params;
+        const { slug } = await params;
         const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${slug}`);
         
         if (!response.ok) {

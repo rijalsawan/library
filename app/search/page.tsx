@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 interface Book {
   kind: string
@@ -212,17 +212,20 @@ const BookCard: React.FC<{ book: Book; index: number }> = ({ book, index }) => {
   )
 }
 
-const Page = () => {
+interface PageProps {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+const Page = ({ searchParams }: PageProps) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [books, setBooks] = React.useState<Book[]>([])
   const [loading, setLoading] = React.useState(false)
   const [searchTerm, setSearchTerm] = React.useState('')
   
-  // Load search term and results from URL on component mount
+  // Load search term and results from searchParams on component mount
   useEffect(() => {
-    const urlSearchTerm = searchParams.get('q')
-    if (urlSearchTerm) {
+    const urlSearchTerm = searchParams.q
+    if (urlSearchTerm && typeof urlSearchTerm === 'string') {
       setSearchTerm(urlSearchTerm)
       performSearch(urlSearchTerm)
     }
